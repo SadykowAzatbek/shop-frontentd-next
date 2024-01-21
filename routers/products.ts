@@ -1,34 +1,28 @@
 import {Router} from 'express';
+import {Product, ProductWithoutId} from "../types";
+import fileDb from "../fileDb";
 const productsRouter = Router();
 
-interface Product {
-  id: string;
-  title: string;
-  price: number;
-  description: string;
-}
-
-const products = [];
-
-productsRouter.get('/', (req, res) => {
-  res.send('Products list');
+productsRouter.get('/', async (req, res) => {
+  const products = await fileDb.getItems();
+  res.send(products);
 });
 
-productsRouter.get('/:id', (req, res) => {
-  res.send('A single product by id');
+productsRouter.get('/:id', async (req, res) => {
+  const products = await fileDb.getItems();
+  const product = products.find(p => p.id === req.params.id);
+  res.send(product);
 });
 
-productsRouter.post('/', (req, res) => {
-  res.send('Post product');
-
-  const product: Product = {
-    id: crypto.randomUUID(),
+productsRouter.post('/', async (req, res) => {
+  const product: ProductWithoutId = {
     title: req.body.title,
     price: req.body.price,
     description: req.body.description,
   };
 
-  products.push(product);
+  const newProduct = await fileDb.addItem(product);
+  res.send(newProduct);
 });
 
 export default productsRouter;
