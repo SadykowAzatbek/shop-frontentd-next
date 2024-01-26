@@ -1,7 +1,7 @@
 import {Router} from 'express';
 import {Product, ProductWithoutId} from "../types";
 import fileDb from "../fileDb";
-const productsRouter = Router();
+const productsRouter = Router()
 
 productsRouter.get('/', async (req, res) => {
   const products = await fileDb.getItems();
